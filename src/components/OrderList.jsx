@@ -1,21 +1,21 @@
 // components/OrderList.js
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
-export default function OrderList({ data }) {
+export default function OrderList({ data, onPressItem }) {
   return (
     <ScrollView contentContainerStyle={styles.scrollContent}>
       {data.map((item) => (
-        <View key={item.id} style={styles.card}>
-          <Text style={styles.title}>Orden #{item.id}</Text>
-          <Text style={styles.subtitle}>Direccion: {item.address}</Text>
-        </View>
+        <TouchableOpacity key={item.id} onPress={() => onPressItem(item)}>
+          <View style={styles.card}>
+            <Text style={styles.orderTitle}>Orden #{item.id}</Text>
+            <Text style={styles.orderAddress}>Dirección: {item.address}</Text>
+          </View>
+        </TouchableOpacity>
       ))}
     </ScrollView>
   );
 }
-
-
 
 const styles = StyleSheet.create({
   scrollContent: {
