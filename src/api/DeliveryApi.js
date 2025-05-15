@@ -1,18 +1,17 @@
+// api/DeliveryApi.js
 import api from "./apiClient";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const InProgressService = {
-
-  async getInProgressOrder() {
+const DeliveryService = {
+  async getOrdersByStatus(status) {
     try {
-      const response = await api.get("/delivery/EN_CAMINO");
+      const response = await api.get(`/delivery/${status}`);
       return response.data;
     } catch (error) {
       throw (
-        error.response?.data?.message || "Error al obtener la orden en progreso"
+        error.response?.data?.message || "Error al obtener órdenes"
       );
     }
   },
 };
 
-export default InProgressService;
+export default DeliveryService;

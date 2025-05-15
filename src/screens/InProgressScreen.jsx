@@ -1,7 +1,7 @@
 // screens/OrderStatusScreen.js
 import React, { useEffect, useState } from "react";
-import { useFocusEffect } from '@react-navigation/native';
-import { useCallback } from 'react';
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
 import { View, StyleSheet, ActivityIndicator, Text } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DeliveryService from "../api/DeliveryApi";
@@ -14,41 +14,43 @@ export default function InProgressScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const fetchDelivery = useCallback(
+    async (isActive, setDelivery, setError, setLoading) => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const delivery = await DeliveryService.getOrdersByStatus("EN_CAMINO");
+
+        if (isActive) {
+          if (delivery.length > 0) {
+            setDelivery(delivery[0]);
+          } else {
+            setDelivery(null);
+            setError("No hay entregas en curso");
+          }
+        }
+      } catch (err) {
+        console.error(err);
+        if (isActive) {
+          setError("Error al obtener la entrega");
+        }
+      } finally {
+        if (isActive) setLoading(false);
+      }
+    },
+    []
+  );
+
   useFocusEffect(
     useCallback(() => {
       let isActive = true;
-
-      const fetchDelivery = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-          const delivery = await DeliveryService.getInProgressOrder();
-          console.log(delivery);
-
-          if (isActive) {
-            if (delivery.length > 0) {
-              setDelivery(delivery[0]);
-            } else {
-              setDelivery(null);
-              setError("No hay entregas en curso");
-            }
-          }
-        } catch (err) {
-          console.error(err);
-          if (isActive) {
-            setError("Error al obtener la entrega");
-          }
-        } finally {
-          if (isActive) setLoading(false);
-        }
-      };
-
-      fetchDelivery();
+      fetchDelivery(isActive, setDelivery, setError, setLoading);
 
       return () => {
         isActive = false;
       };
-    }, [])
+    }, [fetchDelivery])
   );
 
   return (
