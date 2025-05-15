@@ -27,6 +27,6 @@ export default function InProgressScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#e9d8fd',
+    backgroundColor: 'rgba(124, 77, 255, 0.1)',
   },
 });
