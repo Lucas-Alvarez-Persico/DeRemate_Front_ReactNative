@@ -18,9 +18,6 @@ export default function InProgressCard({ orderId, client, address, status, start
           <Text style={styles.bold}>Dirección: </Text>{address}
         </Text>
         <Text style={styles.row}>
-          <Text style={styles.bold}>Estado: </Text>{status}
-        </Text>
-        <Text style={styles.row}>
           <Text style={styles.bold}>Inicio: </Text>{startTime}
         </Text>
       </View>
