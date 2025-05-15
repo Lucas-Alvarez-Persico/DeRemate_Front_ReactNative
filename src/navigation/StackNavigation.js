@@ -1,20 +1,25 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import HomeScreen from '../screens/HomeScreen';
 import DetailsScreen from '../screens/DetailScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import RecoverPasswordScreen from '../screens/RecoverPasswordScreen';
+import TabsNavigator from './TabsNavigator'; // ✅ Importar tu navbar
 
 const Stack = createNativeStackNavigator();
 
 export default function StackNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Login">
-      <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+    <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
+      {/* Screens de autenticación */}
+      <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Register" component={RegisterScreen} />
       <Stack.Screen name="RecoverPassword" component={RecoverPasswordScreen} />
-      <Stack.Screen name="Home" component={HomeScreen} />
+
+      {/* Screens privadas con Bottom Tabs */}
+      <Stack.Screen name="Home" component={TabsNavigator} />
+
+      {/* Otras screens (sin bottom nav) */}
       <Stack.Screen name="Details" component={DetailsScreen} />
     </Stack.Navigator>
   );
