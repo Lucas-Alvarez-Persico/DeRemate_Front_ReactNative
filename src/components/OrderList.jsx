@@ -2,20 +2,19 @@
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 
-// components/OrderList.js
-export default function OrderList(data) {
-  console.log(data)
+export default function OrderList({ data }) {
   return (
     <ScrollView contentContainerStyle={styles.scrollContent}>
       {data.map((item) => (
         <View key={item.id} style={styles.card}>
-          <Text style={styles.title}>{item.id}</Text>
-          <Text style={styles.subtitle}>{item.address}</Text>
+          <Text style={styles.title}>Orden #{item.id}</Text>
+          <Text style={styles.subtitle}>Direccion: {item.address}</Text>
         </View>
       ))}
     </ScrollView>
   );
 }
+
 
 
 const styles = StyleSheet.create({

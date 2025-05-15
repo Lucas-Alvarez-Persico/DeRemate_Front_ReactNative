@@ -17,7 +17,6 @@ export default function OrdersScreen() {
       console.error('Error al obtener órdenes:', error);
       Alert.alert("Error", "No se pudieron cargar las órdenes.");
     } finally {
-      console.log(orders)
       setLoading(false);
     }
   };
@@ -36,8 +35,7 @@ export default function OrdersScreen() {
       {loading ? (
         <ActivityIndicator size="large" color="#7C4DFF" style={{ marginTop: 20 }} />
       ) : (
-        <Text>{orders}</Text>
-
+        <OrderList data = {orders}></OrderList>
       )}
     </View>
   );
