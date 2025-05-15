@@ -41,7 +41,7 @@ export default function LoginScreen() {
       style={{ flex: 1, backgroundColor: '#7C4DFF'}}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.container}>
           <Text style={styles.hola}>Hola!</Text>
           <Text style={styles.bienvenido}>Bienvenido a Deremate</Text>
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
       fontSize: 60,
       color: 'white',
       fontWeight: 'bold',
-      marginTop: 32,
+      marginTop: 42,
     },
     bienvenido: {
       fontSize: 30,
@@ -108,12 +108,13 @@ const styles = StyleSheet.create({
     },
 
     box: {
+        flex: 1,
         backgroundColor: 'rgba(255,255,255,0.85)',
         borderRadius: 20,
         padding: 20,
         marginTop: 60,
         alignItems: 'flex-start', // alineación al inicio
-        paddingTop: 100,          // espacio para que entre la imagen superpuesta
+        paddingTop: 130,          // espacio para que entre la imagen superpuesta
         position: 'relative',
     },
       
@@ -132,7 +133,7 @@ const styles = StyleSheet.create({
         width: 180,
         height: 180,
         position: 'absolute',
-        top: -70,
+        top: -90,
         right: 16,
     },
       
@@ -145,12 +146,14 @@ const styles = StyleSheet.create({
       borderColor: '#6200ea',
       borderWidth: 1,
       marginBottom: 10,
+      marginTop: 10,
       color: '#6200ea',
     },
     forgot: {
       color: '#7C4DFF',
       fontWeight: 'bold',
       marginBottom: 10,
+      marginTop: 10,
       fontSize: 16,
     },
     loginButton: {
@@ -160,6 +163,7 @@ const styles = StyleSheet.create({
       borderRadius: 12,
       alignItems: 'center',
       marginBottom: 10,
+      marginTop: 10,
     },
     registerButton: {
         width: '100%',
