@@ -10,6 +10,30 @@ const completedOrders = [
 ];
 
 export default function HistoryScreen() {
+
+  const [historyOrders, setHistoryOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const token = "a"
+
+  const fetchHistoryOrders = async () => {
+    try {
+      const response = await api.get('/delivery/COMPLETADO', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });      setHistoryOrders(response.data);
+    } catch (error) {
+      console.error('Error al obtener órdenes:', error);
+      Alert.alert("Error", "No se pudieron cargar las órdenes.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchHistoryOrders();
+  }, []);
+
   return (
     <View style={styles.container}>
       <Header
@@ -17,11 +41,11 @@ export default function HistoryScreen() {
         iconName="clipboard-check-outline"
         title="Historial Órdenes Completadas"
       />
-      <OrderList
-        data={completedOrders}
-        renderTitle={(item) => `Orden # ${item.id}`}
-        renderSubtitle={(item) => `Dirección: ${item.direccion}`}
-      />
+      {loading ? (
+        <ActivityIndicator size="large" color="#7C4DFF" style={{ marginTop: 20 }} />
+      ) : (
+        <OrderList data = {historyOrders}></OrderList>
+      )}
     </View>
   );
 }
