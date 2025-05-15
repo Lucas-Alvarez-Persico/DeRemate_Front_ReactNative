@@ -8,8 +8,8 @@ export default function OrderList({ data, onPressItem }) {
       {data.map((item) => (
         <TouchableOpacity key={item.id} onPress={() => onPressItem(item)}>
           <View style={styles.card}>
-            <Text style={styles.orderTitle}>Orden #{item.id}</Text>
-            <Text style={styles.orderAddress}>Dirección: {item.address}</Text>
+            <Text style={styles.orderTitle}>Orden #{item.order.id}</Text>
+            <Text style={styles.orderAddress}>Dirección: {item.order.address}</Text>
           </View>
         </TouchableOpacity>
       ))}
