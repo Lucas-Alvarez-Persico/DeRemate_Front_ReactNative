@@ -12,27 +12,22 @@ import {
   Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import UserService from '../api/AuthApi';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginScreen() {
   const navigation = useNavigation();
   const [usuario, setUsuario] = useState('');
   const [contrasena, setContrasena] = useState('');
 
-  const showAlert = (message) => {
-    Alert.alert('Deremate', message);
-  };
-
-  const loginUser = () => {
-    if (!usuario || !contrasena) {
-      showAlert('Completa todos los campos');
-      return;
-    }
-
-    if (usuario === 'admin' && contrasena === '1234') {
-      showAlert('Bienvenido');
-      navigation.replace('Home');
-    } else {
-      showAlert('Credenciales incorrectas');
+  const loginUser = async () => {
+    try {
+      const user = await UserService.login({ username: usuario, password: contrasena });
+      await AsyncStorage.setItem('access_token', user.access_token); // Se guarda el token
+      await AsyncStorage.setItem('role', user.role);
+      navigation.replace('Home')
+    } catch (errorMessage) {
+      Alert.alert('Deremate', errorMessage);
     }
   };
 
