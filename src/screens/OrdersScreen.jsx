@@ -1,15 +1,32 @@
+// screens/OrdersScreen.js
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import Header from '../components/Header';
+import OrderList from '../components/OrderList';
 
-export default function OrdersScreen({ navigation }) {
+const orders = [
+  { id: 1, address: 'Simon de Iriondo 1119' },
+  { id: 2, address: 'Juan Domingo Peron 2045' },
+  { id: 3, address: 'Libertador 1124' },
+  { id: 4, address: 'Simon de Iriondo 1119' },
+];
+
+export default function OrdersScreen() {
   return (
     <View style={styles.container}>
-      <Text>Orders Screen</Text>
-      <Button title="Go to Details" onPress={() => navigation.navigate('Details')} />
+      <Header
+        backgroundColor="#7C4DFF"
+        iconName="clipboard-list-outline"
+        title="Órdenes"
+      />
+      <OrderList orders={orders} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  container: {
+    flex: 1,
+    backgroundColor: '#e9d8fd',
+  },
 });
