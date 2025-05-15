@@ -15,10 +15,9 @@ export default function OrdersScreen() {
     navigation.navigate("Details", { order });
   };
 
-
   const fetchOrders = async () => {
     try {
-      const response = await api.get('/delivery/COMPLETADO');
+      const response = await api.get('/delivery/PENDIENTE');
       setOrders(response.data);
     } catch (error) {
       console.error('Error al obtener órdenes:', error);

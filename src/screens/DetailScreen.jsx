@@ -1,4 +1,3 @@
-// screens/DetailsScreen.jsx
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useRoute } from '@react-navigation/native';
@@ -6,33 +5,47 @@ import Header from '../components/Header';
 
 export default function DetailsScreen() {
   const route = useRoute();
-  const { order } = route.params; // recibimos la orden desde navigation
+  const { order } = route.params;
+  const orderData = order.order; // Para mayor legibilidad
+
+  const isCompleted = order.status == 'COMPLETADO';
 
   return (
     <View style={styles.container}>
       <Header
-        backgroundColor="#7C4DFF"
+        backgroundColor={isCompleted ? '#FFD93D' : '#7C4DFF'} // verde o violeta
         iconName="clipboard-text-outline"
-        title={`Orden #${order.id}`}
+        title={`Orden #${orderData.id}`}
       />
 
       <View style={styles.detailsCard}>
         <Text style={styles.label}>ID:</Text>
-        <Text style={styles.value}>{order.id}</Text>
+        <Text style={styles.value}>{orderData.id}</Text>
 
         <Text style={styles.label}>Dirección:</Text>
-        <Text style={styles.value}>{order.address}</Text>
-
-        <Text style={styles.label}>Estado:</Text>
-        <Text style={styles.value}>{order.state}</Text>
+        <Text style={styles.value}>{orderData.address}</Text>
 
         <Text style={styles.label}>Cliente:</Text>
-        <Text style={styles.value}>{order.client}</Text>
+        <Text style={styles.value}>{orderData.client}</Text>
 
         <Text style={styles.label}>Ubicación del paquete:</Text>
-        <Text style={styles.value}>{order.packageLocation}</Text>
+        <Text style={styles.value}>{orderData.packageLocation}</Text>
 
-        {/* Agregá más campos si los tenés */}
+        {isCompleted && (
+          <>
+            <Text style={styles.label}>Inicio del envío:</Text>
+            <Text style={styles.value}>{order.startTime}</Text>
+
+            <Text style={styles.label}>Entrega:</Text>
+            <Text style={styles.value}>{order.endTime}</Text>
+
+            <Text style={styles.label}>Duración total:</Text>
+            <Text style={styles.value}>{order.deliveryTime}</Text>
+
+            <Text style={styles.label}>Estado final:</Text>
+            <Text style={styles.value}>{order.status}</Text>
+          </>
+        )}
       </View>
     </View>
   );

@@ -4,12 +4,14 @@ import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import Header from '../components/Header';
 import OrderList from '../components/OrderList';
 import api from '../api/apiClient'
+import { useNavigation } from "@react-navigation/native";
 
 
 export default function HistoryScreen() {
 
   const [historyOrders, setHistoryOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigation = useNavigation();
 
   const fetchHistoryOrders = async () => {
     try {
@@ -28,6 +30,10 @@ export default function HistoryScreen() {
     fetchHistoryOrders();
   }, []);
 
+  const handlePress = (order) => {
+    navigation.navigate("Details", { order });
+  };
+
   return (
     <View style={styles.container}>
       <Header
@@ -38,7 +44,7 @@ export default function HistoryScreen() {
       {loading ? (
         <ActivityIndicator size="large" color="#7C4DFF" style={{ marginTop: 20 }} />
       ) : (
-        <OrderList data = {historyOrders}></OrderList>
+        <OrderList data = {historyOrders} onPressItem={handlePress}></OrderList>
       )}
     </View>
   );

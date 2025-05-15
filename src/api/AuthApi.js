@@ -3,17 +3,6 @@ import api from './apiClient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const UserService = {
     
-
-    async getToken() {
-    try {
-        const token = await AsyncStorage.getItem('access_token');
-        return token;
-    } catch (error) {
-        console.error('Error al obtener token:', error);
-        return null;
-    }
-    },
-
   async login({ username, password }) {
     try {
       const response = await api.post('/user/login', { username, password });
