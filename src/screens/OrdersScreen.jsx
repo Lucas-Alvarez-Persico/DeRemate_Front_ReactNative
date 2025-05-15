@@ -4,10 +4,17 @@ import { View, StyleSheet, ActivityIndicator, Alert } from "react-native";
 import Header from "../components/Header";
 import OrderList from "../components/OrderList";
 import api from "../api/apiClient";
+import { useNavigation } from "@react-navigation/native";
 
 export default function OrdersScreen() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigation = useNavigation();
+
+  const handlePress = (order) => {
+    navigation.navigate("Details", { order });
+  };
+
 
   const fetchOrders = async () => {
     try {
@@ -35,7 +42,7 @@ export default function OrdersScreen() {
       {loading ? (
         <ActivityIndicator size="large" color="#7C4DFF" style={{ marginTop: 20 }} />
       ) : (
-        <OrderList data = {orders}></OrderList>
+       <OrderList data={orders} onPressItem={handlePress} />
       )}
     </View>
   );
