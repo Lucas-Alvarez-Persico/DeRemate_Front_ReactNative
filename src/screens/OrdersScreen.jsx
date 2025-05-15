@@ -11,7 +11,7 @@ export default function OrdersScreen() {
 
   const fetchOrders = async () => {
     try {
-      const response = await api.get('/order');
+      const response = await api.get('/delivery/COMPLETADO');
       setOrders(response.data);
     } catch (error) {
       console.error('Error al obtener órdenes:', error);
