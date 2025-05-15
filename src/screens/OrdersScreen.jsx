@@ -1,17 +1,30 @@
-// screens/OrdersScreen.js
-import React from "react";
-import { View, StyleSheet } from "react-native";
+// screens/OrdersScreen.jsx
+import React, { useEffect, useState } from "react";
+import { View, StyleSheet, ActivityIndicator, Alert } from "react-native";
 import Header from "../components/Header";
 import OrderList from "../components/OrderList";
-
-const orders = [
-  { id: 1, address: "Simon de Iriondo 1119" },
-  { id: 2, address: "Juan Domingo Peron 2045" },
-  { id: 3, address: "Libertador 1124" },
-  { id: 4, address: "Simon de Iriondo 1119" },
-];
+import api from "../api/apiClient";
 
 export default function OrdersScreen() {
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchOrders = async () => {
+    try {
+      const response = await api.get('/order');
+      setOrders(response.data);
+    } catch (error) {
+      console.error('Error al obtener órdenes:', error);
+      Alert.alert("Error", "No se pudieron cargar las órdenes.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
   return (
     <View style={styles.container}>
       <Header
@@ -19,11 +32,11 @@ export default function OrdersScreen() {
         iconName="clipboard-list-outline"
         title="Órdenes"
       />
-      <OrderList
-        data={orders}
-        renderTitle={(item) => `Orden # ${item.id}`}
-        renderSubtitle={(item) => `Dirección: ${item.address}`}
-      />
+      {loading ? (
+        <ActivityIndicator size="large" color="#7C4DFF" style={{ marginTop: 20 }} />
+      ) : (
+        <OrderList data = {orders}></OrderList>
+      )}
     </View>
   );
 }
