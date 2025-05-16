@@ -10,7 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons'; // Asegúrate de tener instalado @expo/vector-icons o usa un ícono propio
+import { Ionicons } from '@expo/vector-icons'; 
 
 export default function RecoverPasswordScreen() {
   const navigation = useNavigation();

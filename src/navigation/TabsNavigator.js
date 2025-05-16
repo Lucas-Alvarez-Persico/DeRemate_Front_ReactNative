@@ -5,6 +5,7 @@ import InProgressScreen from '../screens/InProgressScreen';
 import HistoryScreen from '../screens/HistoryScreen';
 import UserScreen from '../screens/UserScreen';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Text } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 
@@ -15,28 +16,68 @@ export default function TabsNavigator() {
         headerShown: false,
         tabBarStyle: {
           backgroundColor: '#fff',
-          height: 65,
+          height: 75,
+          paddingBottom: 10,
+          paddingTop: 5,
           borderTopLeftRadius: 12,
           borderTopRightRadius: 12,
         },
-        tabBarIcon: ({ color, focused }) => {
+        tabBarIcon: ({ focused }) => {
           let iconName;
-          if (route.name === 'Orders') iconName = 'view-list';
-          else if (route.name === 'InProgress') iconName = 'truck-delivery-outline';
-          else if (route.name === 'History') iconName = 'file-document-outline';
-          else if (route.name === 'User') iconName = 'account-outline';
+          let iconColor;
 
-          return <Icon name={iconName} size={26} color={focused ? '#6200ea' : '#999'} />;
+          switch (route.name) {
+            case 'Orders':
+              iconName = 'view-list';
+              iconColor = focused ? '#6200ea' : '#999';
+              break;
+            case 'InProgress':
+              iconName = 'truck-delivery-outline';
+              iconColor = focused ? '#6200ea' : '#999';
+              break;
+            case 'History':
+              iconName = 'file-document-outline';
+              iconColor = focused ? '#FFD93D' : '#999';
+              break;
+            case 'User':
+              iconName = 'account-outline';
+              iconColor = focused ? '#FFD93D' : '#999';
+              break;
+          }
+
+          return <Icon name={iconName} size={30} color={iconColor} />;
         },
-        tabBarActiveTintColor: '#6200ea',
-        tabBarInactiveTintColor: '#999',
+        tabBarLabel: ({ focused }) => {
+          let label;
+          let labelColor;
+
+          switch (route.name) {
+            case 'Orders':
+              label = 'Órdenes';
+              labelColor = focused ? '#6200ea' : '#999';
+              break;
+            case 'InProgress':
+              label = 'En Curso';
+              labelColor = focused ? '#6200ea' : '#999';
+              break;
+            case 'History':
+              label = 'Historial';
+              labelColor = focused ? '#FFD93D' : '#999';
+              break;
+            case 'User':
+              label = 'Usuario';
+              labelColor = focused ? '#FFD93D' : '#999';
+              break;
+          }
+
+          return <Text style={{ fontSize: 12, color: labelColor }}>{label}</Text>;
+        },
       })}
     >
-      <Tab.Screen name="Orders" component={OrdersScreen} options={{ title: 'Órdenes' }} />
-      <Tab.Screen name="InProgress" component={InProgressScreen} options={{ title: 'En Curso' }} />
-      <Tab.Screen name="History" component={HistoryScreen} options={{ title: 'Historial' }} />
-      <Tab.Screen name="User" component={UserScreen} options={{ title: 'Usuario' }} />
-
+      <Tab.Screen name="Orders" component={OrdersScreen} />
+      <Tab.Screen name="InProgress" component={InProgressScreen} />
+      <Tab.Screen name="History" component={HistoryScreen} />
+      <Tab.Screen name="User" component={UserScreen} />
     </Tab.Navigator>
   );
 }

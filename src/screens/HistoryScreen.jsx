@@ -58,8 +58,11 @@ export default function HistoryScreen() {
               <Icon name="clipboard-check-outline" size={50} color="#fff" />
               <Text style={styles.headerText}>Historial Órdenes Completadas</Text>
       </View>
-
-      <View>
+      
+      {!loading && !error && (
+        <OrderList orders={historyOrders} onPress={handlePress} />
+      )}
+      <View style={{ flex: 1 }}>
       {loading && (
         <View style={styles.center}>
           <ActivityIndicator size="large" color="#7C4DFF" />
@@ -72,9 +75,6 @@ export default function HistoryScreen() {
         </View>
       )}
       </View>
-      {!loading && !error && (
-        <OrderList orders={historyOrders} onPress={handlePress} />
-      )}
     </View>
   );
 }
