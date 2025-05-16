@@ -6,6 +6,8 @@ import { View, StyleSheet, ActivityIndicator, Text } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DeliveryService from "../api/DeliveryApi";
 import Header from "../components/Header";
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
 
 import OrderStatusCard from "../components/InProgressCard";
 
@@ -55,12 +57,21 @@ export default function InProgressScreen() {
 
   return (
     <View style={styles.container}>
-      <Header
-        backgroundColor="#7C4DFF"
-        iconName="truck-delivery-outline"
-        title="En Curso"
-      />
 
+      {/* Encabezado */}
+      <View style={styles.header}>
+        <Icon name="truck-delivery-outline" size={50} color="#fff" />
+        <Text style={styles.headerText}>En Curso</Text>
+      </View>
+      {delivery && (
+        <OrderStatusCard
+          orderId={delivery.id}
+          client={delivery.order.client}
+          address={delivery.order.address}
+          startTime={formatDateTime(delivery.startTime)}
+        />
+      )}
+      
       {loading && (
         <View style={styles.center}>
           <ActivityIndicator size="large" color="#7C4DFF" />
@@ -73,14 +84,6 @@ export default function InProgressScreen() {
         </View>
       )}
 
-      {delivery && (
-        <OrderStatusCard
-          orderId={delivery.id}
-          client={delivery.order.client}
-          address={delivery.order.address}
-          startTime={formatDateTime(delivery.startTime)}
-        />
-      )}
     </View>
   );
 }
@@ -96,11 +99,40 @@ function formatDateTime(dateTimeString) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgba(124, 77, 255, 0.1)",
+    backgroundColor: 'rgba(124, 77, 255, 0.1)',
   },
-  center: {
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  header: {
+    backgroundColor: '#7C4DFF',
+    paddingTop: 60,
+    paddingBottom: 20,
+    alignItems: 'center',
+  },
+  headerText: {
+    marginTop: 10,
+    fontSize: 20,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  body: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  bold: {
+    fontWeight: 'bold',
+  },
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

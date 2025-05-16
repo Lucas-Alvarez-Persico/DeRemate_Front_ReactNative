@@ -2,14 +2,22 @@
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
-export default function OrderList({ data, onPressItem }) {
+export default function OrderList({ orders = [], onPress }) {
+  if (!Array.isArray(orders) || orders.length === 0) {
+    return (
+      <View style={styles.emptyContainer}>
+        <Text style={styles.emptyText}>No hay órdenes disponibles.</Text>
+      </View>
+    );
+  }
+
   return (
     <ScrollView contentContainerStyle={styles.scrollContent}>
-      {data.map((item) => (
-        <TouchableOpacity key={item.id} onPress={() => onPressItem(item)}>
+      {orders.map((item) => (
+        <TouchableOpacity key={item.id} onPress={() => onPress(item)}>
           <View style={styles.card}>
-            <Text style={styles.orderTitle}>Orden #{item.order.id}</Text>
-            <Text style={styles.orderAddress}>Dirección: {item.order.address}</Text>
+            <Text style={styles.orderTitle}>Orden #{item.order?.id ?? 'N/A'}</Text>
+            <Text style={styles.orderAddress}>Dirección: {item.order?.address ?? 'Sin dirección'}</Text>
           </View>
         </TouchableOpacity>
       ))}

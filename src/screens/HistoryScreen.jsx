@@ -1,28 +1,35 @@
-// screens/HistoryScreen.js
-import React, { useState, useEffect, useCallback } from "react";
-import { View, StyleSheet, ActivityIndicator } from "react-native";
+import React, { useState, useCallback } from "react";
+import { View, StyleSheet, ActivityIndicator, Text } from "react-native";
 import Header from "../components/Header";
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import OrderList from "../components/OrderList";
-import api from "../api/apiClient";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import DeliveryService from "../api/DeliveryApi"; // 👈 usar el nuevo servicio
+import DeliveryService from "../api/DeliveryApi";
 
 export default function HistoryScreen() {
   const [historyOrders, setHistoryOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigation = useNavigation();
 
   const fetchHistoryOrders = useCallback(async (isActive) => {
     setLoading(true);
+    setError(null);
+
     try {
-      const data = await DeliveryService.getOrdersByStatus("COMPLETADO");
+      const orders = await DeliveryService.getOrdersByStatus("COMPLETADO");
       if (isActive) {
-        setHistoryOrders(data);
+        if (orders.length > 0) {
+          setHistoryOrders(orders);
+        } else {
+          setHistoryOrders([]);
+          setError("No hay entregas completadas");
+        }
       }
     } catch (error) {
       console.error("Error al obtener órdenes:", error);
       if (isActive) {
-        Alert.alert("Error", "No se pudieron cargar las órdenes.");
+        setError("No se pudieron cargar las órdenes.");
       }
     } finally {
       if (isActive) setLoading(false);
@@ -44,20 +51,29 @@ export default function HistoryScreen() {
   };
 
   return (
+    
     <View style={styles.container}>
-      <Header
-        backgroundColor="#FFD93D"
-        iconName="clipboard-check-outline"
-        title="Historial Órdenes Completadas"
-      />
-      {loading ? (
-        <ActivityIndicator
-          size="large"
-          color="#7C4DFF"
-          style={{ marginTop: 20 }}
-        />
-      ) : (
-        <OrderList data={historyOrders} onPressItem={handlePress}></OrderList>
+      {/* Encabezado */}
+      <View style={styles.header}>
+              <Icon name="clipboard-check-outline" size={50} color="#fff" />
+              <Text style={styles.headerText}>Historial Órdenes Completadas</Text>
+      </View>
+
+      <View>
+      {loading && (
+        <View style={styles.center}>
+          <ActivityIndicator size="large" color="#7C4DFF" />
+        </View>
+      )}
+
+      {error && (
+        <View style={styles.center}>
+          <Text>{error}</Text>
+        </View>
+      )}
+      </View>
+      {!loading && !error && (
+        <OrderList orders={historyOrders} onPress={handlePress} />
       )}
     </View>
   );
@@ -66,6 +82,40 @@ export default function HistoryScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgba(255, 217, 61, 0.1)",
+    backgroundColor: 'rgba(255, 217, 61, 0.1)',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  header: {
+    backgroundColor: '#FFD93D',
+    paddingTop: 60,
+    paddingBottom: 20,
+    alignItems: 'center',
+  },
+  headerText: {
+    marginTop: 10,
+    fontSize: 20,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  body: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  bold: {
+    fontWeight: 'bold',
+  },
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

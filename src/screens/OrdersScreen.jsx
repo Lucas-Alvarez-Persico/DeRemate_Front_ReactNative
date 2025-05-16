@@ -1,31 +1,35 @@
-// screens/OrdersScreen.jsx
 import React, { useEffect, useState, useCallback } from "react";
-import { View, StyleSheet, ActivityIndicator, Alert } from "react-native";
+import { View, StyleSheet, ActivityIndicator, Text } from "react-native";
 import Header from "../components/Header";
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import OrderList from "../components/OrderList";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import DeliveryService from "../api/DeliveryApi"; // 👈 usar el nuevo servicio
+import DeliveryService from "../api/DeliveryApi"; 
 
 export default function OrdersScreen() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigation = useNavigation();
 
-  const handlePress = (order) => {
-    navigation.navigate("Details", { order });
-  };
-
-  const fetchOrders = useCallback(async (isActive, setOrders, setLoading) => {
+  const fetchOrders = useCallback(async (isActive) => {
     setLoading(true);
+    setError(null);
+
     try {
       const data = await DeliveryService.getOrdersByStatus("PENDIENTE");
       if (isActive) {
-        setOrders(data);
+        if (data.length > 0) {
+          setOrders(data);
+        } else {
+          setOrders([]);
+          setError("No hay entregas completadas");
+        }
       }
     } catch (error) {
       console.error("Error al obtener órdenes:", error);
       if (isActive) {
-        Alert.alert("Error", "No se pudieron cargar las órdenes.");
+        setError("No se pudieron cargar las órdenes.");
       }
     } finally {
       if (isActive) setLoading(false);
@@ -35,7 +39,7 @@ export default function OrdersScreen() {
   useFocusEffect(
     useCallback(() => {
       let isActive = true;
-      fetchOrders(isActive, setOrders, setLoading);
+      fetchOrders(isActive);
 
       return () => {
         isActive = false;
@@ -43,29 +47,77 @@ export default function OrdersScreen() {
     }, [fetchOrders])
   );
 
+  const handlePress = (order) => {
+    navigation.navigate("Details", { order });
+  };
+
   return (
+    
     <View style={styles.container}>
-      <Header
-        backgroundColor="#7C4DFF"
-        iconName="clipboard-list-outline"
-        title="Órdenes"
-      />
-      {loading ? (
-        <ActivityIndicator
-          size="large"
-          color="#7C4DFF"
-          style={{ marginTop: 20 }}
-        />
-      ) : (
-        <OrderList data={orders} onPressItem={handlePress} />
+      {/* Encabezado */}
+      <View style={styles.header}>
+              <Icon name="clipboard-list-outline" size={50} color="#fff" />
+              <Text style={styles.headerText}>Órdenes</Text>
+      </View>
+      {!loading && !error && (
+        <OrderList orders={orders} onPress={handlePress} />
       )}
+      <View style={{ flex: 1 }}>
+      {loading && (
+        <View style={styles.center}>
+          <ActivityIndicator size="large" color="#7C4DFF" />
+        </View>
+      )}
+
+      {error && (
+        <View style={styles.center}>
+          <Text>{error}</Text>
+        </View>
+      )}
+      </View>
+
     </View>
   );
 }
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgba(124, 77, 255, 0.1)",
+    backgroundColor: 'rgba(124, 77, 255, 0.1)',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  header: {
+    backgroundColor: '#7C4DFF',
+    paddingTop: 60,
+    paddingBottom: 20,
+    alignItems: 'center',
+  },
+  headerText: {
+    marginTop: 10,
+    fontSize: 20,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  body: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  bold: {
+    fontWeight: 'bold',
+  },
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
