@@ -22,6 +22,7 @@ export default function LoginScreen() {
 
   const loginUser = async () => {
     try {
+      await AsyncStorage.removeItem('access_token');
       const user = await UserService.login({ username: usuario, password: contrasena });
       await AsyncStorage.setItem('access_token', user.access_token); // Se guarda el token
       await AsyncStorage.setItem('role', user.role);
