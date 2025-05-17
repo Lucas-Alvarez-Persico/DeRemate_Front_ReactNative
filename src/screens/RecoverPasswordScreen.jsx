@@ -8,27 +8,41 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Platform,
-  Alert
+  Alert,
+  ActivityIndicator
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons'; 
+import UserService from '../api/AuthApi';
+
 
 export default function RecoverPasswordScreen() {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
   }, [navigation]);
 
-  const handleRecover = () => {
-    if (!email) {
-      Alert.alert('Deremate', 'Por favor, ingresa tu correo electrónico');
-      return;
-    }
-    Alert.alert('Deremate', 'Se ha enviado un correo para recuperar tu contraseña');
-    // Aquí puedes implementar lógica de recuperación real si tienes backend
-  };
+const handleRecover = async () => {
+  if (!email) {
+    Alert.alert('Deremate', 'Por favor, ingresa tu correo electrónico');
+    return;
+  }
+
+  try {
+    setLoading(true);
+    const response = await UserService.recoverMail(email);
+    Alert.alert('Deremate', 'Revisa tu correo electrónico para el código de verificación');
+    navigation.navigate('ValidateCodeScreen', { username: email });
+  } catch (error) {
+    Alert.alert('Error', error.toString());
+  } finally {
+    setLoading(false);
+  }
+  
+};
 
   return (
     <KeyboardAvoidingView
@@ -55,9 +69,16 @@ export default function RecoverPasswordScreen() {
               autoCapitalize="none"
             />
 
-            <TouchableOpacity style={styles.button} onPress={handleRecover}>
+            <TouchableOpacity
+              style={[styles.button, loading && { opacity: 0.6 }]}
+              onPress={handleRecover}
+              disabled={loading}
+            >
               <Text style={styles.buttonText}>Aceptar</Text>
             </TouchableOpacity>
+            {loading && (
+              <ActivityIndicator size="large" color="#6200ea" style={{ marginTop: 20 }} />
+            )}
           </View>
         </View>
       </ScrollView>

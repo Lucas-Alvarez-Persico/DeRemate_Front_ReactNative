@@ -1,6 +1,7 @@
 // services/UserService.js
 import api from './apiClient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const UserService = {
     
   async login({ username, password }) {
@@ -34,6 +35,7 @@ const UserService = {
     try {
       const response = await api.post('/user/recover/mail', username, {
         headers: { 'Content-Type': 'application/json' },
+        responseType: 'text',
       });
       return response.data;
     } catch (error) {
@@ -53,8 +55,10 @@ const UserService = {
   async newPassword({ username, password }) {
     try {
       const response = await api.post('/user/newPassword', { username, password });
+      //console.log('Código de estado:', response.status); // 👈 Esto te muestra el status
       return response.data;
     } catch (error) {
+      //console.log('Error completo:', error.response.status); // 👈 Podés ver el status en errores también
       throw error.response?.data?.message || 'Error al establecer nueva contraseña';
     }
   },
