@@ -13,6 +13,8 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useLayoutEffect } from 'react';
+import UserService from '../api/AuthApi';
+
 
 export default function RegisterScreen() {
   const navigation = useNavigation();
@@ -30,16 +32,29 @@ export default function RegisterScreen() {
     Alert.alert('Deremate', message);
   };
 
-  const handleRegister = () => {
-    if (!nombre || !email || !contrasena) {
-      showAlert('Completa todos los campos');
-      return;
-    }
-
-    // Aquí iría tu lógica para registrar el usuario
-    showAlert('Cuenta registrada exitosamente');
-    navigation.replace('Login');
+  const handleRegister = async () => {
+  if (!nombre || !email || !contrasena) {
+    showAlert('Completa todos los campos');
+    return;
+  }
+console.log('Nombre:', nombre);
+  const user = {
+    name : nombre,
+    username: email,
+    password: contrasena,
+    role: 'ADMIN',
   };
+console.log('Usuario:', user);
+  try {
+    console.log('Registrando usuario...');
+    await UserService.registerMail(user);
+    showAlert('Cuenta registrada exitosamente. Revisa tu correo.');
+    navigation.replace('RegisterValidateCodeScreen', { username: email });
+  } catch (error) {
+    showAlert(error || 'Ocurrió un error al registrar');
+  }
+};
+
 
   return (
     <KeyboardAvoidingView

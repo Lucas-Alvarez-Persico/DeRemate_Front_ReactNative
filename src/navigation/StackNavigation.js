@@ -6,6 +6,7 @@ import RegisterScreen from '../screens/RegisterScreen';
 import RecoverPasswordScreen from '../screens/RecoverPasswordScreen';
 import ValidateCodeScreen from '../screens/ValidateCodeScreen.jsx';
 import NewPasswordScreen from '../screens/NewPasswordScreen'
+import RegisterValidateCodeScreen from '../screens/RegisterValidateCodeScreen';
 
 import TabsNavigator from './TabsNavigator'; // ✅ Importar tu navbar
 
@@ -27,6 +28,7 @@ export default function StackNavigator() {
       <Stack.Screen name="Details" component={DetailsScreen} />
       <Stack.Screen name="ValidateCodeScreen" component={ValidateCodeScreen} />
       <Stack.Screen name="NewPasswordScreen" component={NewPasswordScreen} />
+      <Stack.Screen name="RegisterValidateCodeScreen" component={RegisterValidateCodeScreen} />
     </Stack.Navigator>
   );
 }

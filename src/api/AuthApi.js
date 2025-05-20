@@ -13,14 +13,24 @@ const UserService = {
     }
   },
 
-  async registerMail(user) {
-    try {
-      const response = await api.post('/user/register/mail', user);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data?.message || 'Error al enviar correo de registro';
+async registerMail(user) {
+  try {
+    console.log('Usuario en registerMail:', user);
+    const response = await api.post('/user/register/mail', user);
+    return response.data;
+  } catch (error) {
+    console.log('Error en registerMail:', error);
+
+    if (error.response?.data?.message) {
+      throw error.response.data.message;
+    } else if (error.message) {
+      // Caso de red: error.message será "Network Error"
+      throw error.message;
+    } else {
+      throw 'Error desconocido al enviar el correo';
     }
-  },
+  }
+},
 
   async register({ username, code }) {
     try {
