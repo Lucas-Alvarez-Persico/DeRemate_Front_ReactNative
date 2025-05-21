@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   View,
   Text,
@@ -12,21 +12,27 @@ import {
   Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import UserService from '../api/AuthApi';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthContext } from '../context/AuthContext';
+import * as SecureStore from 'expo-secure-store';
+import useAuthApi from '../api/AuthApi';
 
 export default function LoginScreen() {
   const navigation = useNavigation();
+  const { login } = useContext(AuthContext);
+  const { login: loginRequest } = useAuthApi(); 
   const [usuario, setUsuario] = useState('');
   const [contrasena, setContrasena] = useState('');
 
   const loginUser = async () => {
     try {
-      await AsyncStorage.removeItem('access_token');
-      const user = await UserService.login({ username: usuario, password: contrasena });
-      await AsyncStorage.setItem('access_token', user.access_token); // Se guarda el token
-      await AsyncStorage.setItem('role', user.role);
-      navigation.replace('Home')
+      await SecureStore.deleteItemAsync('access_token');
+      const user = await loginRequest({ username: usuario, password: contrasena });
+
+      await SecureStore.setItemAsync('access_token', user.access_token);
+      await SecureStore.setItemAsync('role', user.role);
+
+      await login(user.access_token); // Actualiza estado global
+      navigation.replace('Home');
     } catch (errorMessage) {
       Alert.alert('Deremate', errorMessage);
     }
@@ -34,7 +40,7 @@ export default function LoginScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: '#7C4DFF'}}
+      style={{ flex: 1, backgroundColor: '#7C4DFF' }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -43,9 +49,8 @@ export default function LoginScreen() {
           <Text style={styles.bienvenido}>Bienvenido a Deremate</Text>
 
           <View style={styles.box}>
-                <Text style={styles.loginTitle}>Login</Text>
-                <Image source={require('../../assets/box_closed.png')} style={styles.image} /> 
-
+            <Text style={styles.loginTitle}>Login</Text>
+            <Image source={require('../../assets/box_closed.png')} style={styles.image} />
 
             <TextInput
               style={styles.input}
@@ -84,95 +89,88 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#7C4DFF', // violeta1
-      padding: 10,
-    },
-    hola: {
-      fontSize: 60,
-      color: 'white',
-      fontWeight: 'bold',
-      marginTop: 42,
-    },
-    bienvenido: {
-      fontSize: 30,
-      color: 'white',
-      fontWeight: 'bold',
-      marginTop: 8,
-      paddingBottom: 100,
-    },
-
-    box: {
-        flex: 1,
-        backgroundColor: 'rgba(255,255,255,0.85)',
-        borderRadius: 20,
-        padding: 20,
-        marginTop: 60,
-        alignItems: 'flex-start', // alineación al inicio
-        paddingTop: 130,          // espacio para que entre la imagen superpuesta
-        position: 'relative',
-    },
-      
-    loginTitle: {
-        fontSize: 40,
-        fontWeight: 'bold',
-        color: '#7C4DFF',
-        marginLeft: 10,
-        marginBottom: 16,
-        position: 'absolute',
-        top: 16,
-        left: 16,
-    },
-      
-    image: {
-        width: 180,
-        height: 180,
-        position: 'absolute',
-        top: -90,
-        right: 16,
-    },
-      
-      
-    input: {
-      width: '100%',
-      padding: 12,
-      borderRadius: 12,
-      backgroundColor: 'white',
-      borderColor: '#6200ea',
-      borderWidth: 1,
-      marginBottom: 10,
-      marginTop: 10,
-      color: '#6200ea',
-    },
-    forgot: {
-      color: '#7C4DFF',
-      fontWeight: 'bold',
-      marginBottom: 10,
-      marginTop: 10,
-      fontSize: 16,
-    },
-    loginButton: {
-      width: '100%',
-      backgroundColor: '#6200ea', // violeta3
-      padding: 12,
-      borderRadius: 12,
-      alignItems: 'center',
-      marginBottom: 10,
-      marginTop: 10,
-    },
-    registerButton: {
-        width: '100%',
-        backgroundColor: '#7C4DFF',
-        padding: 12,
-        borderRadius: 12,
-        alignItems: 'center',
-        marginTop: 8,
-      },
-      
-    buttonText: {
-      color: 'white',
-      fontWeight: 'bold',
-    },
-  });
-  
+  container: {
+    flex: 1,
+    backgroundColor: '#7C4DFF',
+    padding: 10,
+  },
+  hola: {
+    fontSize: 60,
+    color: 'white',
+    fontWeight: 'bold',
+    marginTop: 42,
+  },
+  bienvenido: {
+    fontSize: 30,
+    color: 'white',
+    fontWeight: 'bold',
+    marginTop: 8,
+    paddingBottom: 100,
+  },
+  box: {
+    flex: 1,
+    backgroundColor: 'rgba(255,255,255,0.85)',
+    borderRadius: 20,
+    padding: 20,
+    marginTop: 60,
+    alignItems: 'flex-start',
+    paddingTop: 130,
+    position: 'relative',
+  },
+  loginTitle: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    color: '#7C4DFF',
+    marginLeft: 10,
+    marginBottom: 16,
+    position: 'absolute',
+    top: 16,
+    left: 16,
+  },
+  image: {
+    width: 180,
+    height: 180,
+    position: 'absolute',
+    top: -90,
+    right: 16,
+  },
+  input: {
+    width: '100%',
+    padding: 12,
+    borderRadius: 12,
+    backgroundColor: 'white',
+    borderColor: '#6200ea',
+    borderWidth: 1,
+    marginBottom: 10,
+    marginTop: 10,
+    color: '#6200ea',
+  },
+  forgot: {
+    color: '#7C4DFF',
+    fontWeight: 'bold',
+    marginBottom: 10,
+    marginTop: 10,
+    fontSize: 16,
+  },
+  loginButton: {
+    width: '100%',
+    backgroundColor: '#6200ea',
+    padding: 12,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginBottom: 10,
+    marginTop: 10,
+  },
+  registerButton: {
+    width: '100%',
+    backgroundColor: '#7C4DFF',
+    padding: 12,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+});

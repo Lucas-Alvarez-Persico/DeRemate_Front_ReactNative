@@ -1,17 +1,19 @@
-// api/DeliveryApi.js
-import api from "./apiClient";
+// hooks/useDeliveryApi.js
+import { useAxios } from '../hooks/useAxios';
 
-const DeliveryService = {
-  async getOrdersByStatus(status) {
+const useDeliveryApi = () => {
+  const axiosInstance = useAxios();
+
+  const getOrdersByStatus = async (status) => {
     try {
-      const response = await api.get(`/delivery/${status}`);
+      const response = await axiosInstance.get(`/delivery/${status}`);
       return response.data;
     } catch (error) {
-      throw (
-        error.response?.data?.message || "Error al obtener órdenes"
-      );
+      throw error.response?.data?.message || "Error al obtener órdenes";
     }
-  },
+  };
+
+  return { getOrdersByStatus };
 };
 
-export default DeliveryService;
+export default useDeliveryApi;

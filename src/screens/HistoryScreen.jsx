@@ -4,20 +4,21 @@ import Header from "../components/Header";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import OrderList from "../components/OrderList";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import DeliveryService from "../api/DeliveryApi";
+import useDeliveryService from "../api/DeliveryApi";
 
 export default function HistoryScreen() {
   const [historyOrders, setHistoryOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigation = useNavigation();
+  const { getOrdersByStatus } = useDeliveryService();
 
   const fetchHistoryOrders = useCallback(async (isActive) => {
     setLoading(true);
     setError(null);
 
     try {
-      const orders = await DeliveryService.getOrdersByStatus("COMPLETADO");
+      const orders = await getOrdersByStatus("COMPLETADO");
       if (isActive) {
         if (orders.length > 0) {
           setHistoryOrders(orders);

@@ -3,8 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
 import { View, StyleSheet, ActivityIndicator, Text } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import DeliveryService from "../api/DeliveryApi";
+import useDeliveryService from "../api/DeliveryApi";
 import Header from "../components/Header";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -15,6 +14,7 @@ export default function InProgressScreen() {
   const [delivery, setDelivery] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { getOrdersByStatus } = useDeliveryService();
 
   const fetchDelivery = useCallback(
     async (isActive, setDelivery, setError, setLoading) => {
@@ -22,7 +22,7 @@ export default function InProgressScreen() {
       setError(null);
 
       try {
-        const delivery = await DeliveryService.getOrdersByStatus("EN_CAMINO");
+        const delivery = await getOrdersByStatus("EN_CAMINO");
 
         if (isActive) {
           if (delivery.length > 0) {

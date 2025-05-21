@@ -13,13 +13,13 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons'; 
-import UserService from '../api/AuthApi';
-
+import useAuthService from '../api/AuthApi';
 
 export default function RecoverPasswordScreen() {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
+  const { recoverMail } = useAuthService();
 
   useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -33,7 +33,7 @@ const handleRecover = async () => {
 
   try {
     setLoading(true);
-    const response = await UserService.recoverMail(email);
+    const response = await recoverMail(email);
     Alert.alert('Deremate', 'Revisa tu correo electrónico para el código de verificación');
     navigation.navigate('ValidateCodeScreen', { username: email });
   } catch (error) {

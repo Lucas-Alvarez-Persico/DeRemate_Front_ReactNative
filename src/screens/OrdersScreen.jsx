@@ -4,20 +4,21 @@ import Header from "../components/Header";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import OrderList from "../components/OrderList";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import DeliveryService from "../api/DeliveryApi"; 
+import useDeliveryService from "../api/DeliveryApi"; 
 
 export default function OrdersScreen() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigation = useNavigation();
+  const { getOrdersByStatus } = useDeliveryService();
 
   const fetchOrders = useCallback(async (isActive) => {
     setLoading(true);
     setError(null);
 
     try {
-      const data = await DeliveryService.getOrdersByStatus("PENDIENTE");
+      const data = await getOrdersByStatus("PENDIENTE");
       if (isActive) {
         if (data.length > 0) {
           setOrders(data);

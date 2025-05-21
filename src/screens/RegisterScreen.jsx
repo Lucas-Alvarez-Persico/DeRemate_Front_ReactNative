@@ -13,14 +13,14 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useLayoutEffect } from 'react';
-import UserService from '../api/AuthApi';
-
+import useAuthService from '../api/AuthApi';
 
 export default function RegisterScreen() {
   const navigation = useNavigation();
   const [nombre, setNombre] = useState('');
   const [email, setEmail] = useState('');
   const [contrasena, setContrasena] = useState('');
+  const { registerMail } = useAuthService();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -47,7 +47,7 @@ console.log('Nombre:', nombre);
 console.log('Usuario:', user);
   try {
     console.log('Registrando usuario...');
-    await UserService.registerMail(user);
+    await registerMail(user);
     showAlert('Cuenta registrada exitosamente. Revisa tu correo.');
     navigation.replace('RegisterValidateCodeScreen', { username: email });
   } catch (error) {
