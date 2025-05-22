@@ -1,19 +1,20 @@
 // screens/ValidateCodeScreen.js
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import UserService from '../api/AuthApi';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import useAuthService from '../api/AuthApi';
+import * as SecureStore from 'expo-secure-store'; 
 import CodeValidationForm from '../components/CodeValidationForm';
 
 export default function ValidateCodeScreen() {
   const navigation = useNavigation();
   const route = useRoute();
   const { username } = route.params;
+  const { recover } = useAuthService();
 
   const handleValidate = async ({ username, code }) => {
-    const data = await UserService.recover({ username, code });
-    await AsyncStorage.setItem('access_token', data); // ← Verificá que `data` sea string si usás así
+    const data = await recover({ username, code });
+    await SecureStore.setItemAsync('access_token', data);
     navigation.navigate('NewPasswordScreen', { username });
   };
 

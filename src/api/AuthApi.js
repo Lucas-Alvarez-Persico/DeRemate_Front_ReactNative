@@ -1,49 +1,39 @@
-// services/UserService.js
-import api from './apiClient';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// hooks/useAuthApi.js
+import { useAxios } from '../hooks/useAxios';
 
-const UserService = {
-    
-  async login({ username, password }) {
+const useAuthApi = () => {
+  const axiosInstance = useAxios();
+
+  const login = async ({ username, password }) => {
     try {
-      const response = await api.post('/user/login', { username, password });
+      const response = await axiosInstance.post('/user/login', { username, password });
       return response.data;
     } catch (error) {
       throw error.response?.data?.message || 'Error al iniciar sesión';
     }
-  },
+  };
 
-async registerMail(user) {
-  try {
-    console.log('Usuario en registerMail:', user);
-    const response = await api.post('/user/register/mail', user);
-    return response.data;
-  } catch (error) {
-    console.log('Error en registerMail:', error);
-
-    if (error.response?.data?.message) {
-      throw error.response.data.message;
-    } else if (error.message) {
-      // Caso de red: error.message será "Network Error"
-      throw error.message;
-    } else {
-      throw 'Error desconocido al enviar el correo';
-    }
-  }
-},
-
-  async register({ username, code }) {
+  const registerMail = async (user) => {
     try {
-      const response = await api.post('/user/register', { username, code });
+      const response = await axiosInstance.post('/user/register/mail', user);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data?.message || 'Error al enviar correo de registro';
+    }
+  };
+
+  const register = async ({ username, code }) => {
+    try {
+      const response = await axiosInstance.post('/user/register', { username, code });
       return response.data;
     } catch (error) {
       throw error.response?.data?.message || 'Error al registrar usuario';
     }
-  },
+  };
 
-  async recoverMail(username) {
+  const recoverMail = async (username) => {
     try {
-      const response = await api.post('/user/recover/mail', username, {
+      const response = await axiosInstance.post('/user/recover/mail', username, {
         headers: { 'Content-Type': 'application/json' },
         responseType: 'text',
       });
@@ -51,36 +41,44 @@ async registerMail(user) {
     } catch (error) {
       throw error.response?.data?.message || 'Error al enviar correo de recuperación';
     }
-  },
+  };
 
-  async recover({ username, code }) {
+  const recover = async ({ username, code }) => {
     try {
-      const response = await api.post('/user/recover', { username, code });
+      const response = await axiosInstance.post('/user/recover', { username, code });
       return response.data;
     } catch (error) {
       throw error.response?.data?.message || 'Error al recuperar contraseña';
     }
-  },
+  };
 
-  async newPassword({ username, password }) {
+  const updatePassword = async ({ username, password }) => {
     try {
-      const response = await api.post('/user/newPassword', { username, password });
-      //console.log('Código de estado:', response.status); // 👈 Esto te muestra el status
+      const response = await axiosInstance.post('/user/newPassword', { username, password });
       return response.data;
     } catch (error) {
-      //console.log('Error completo:', error.response.status); // 👈 Podés ver el status en errores también
       throw error.response?.data?.message || 'Error al establecer nueva contraseña';
     }
-  },
+  };
 
-  async getProfile() {
+  const getProfile = async () => {
     try {
-      const response = await api.get('/user/profile');
+      const response = await axiosInstance.get('/user/profile');
       return response.data;
     } catch (error) {
       throw error.response?.data?.message || 'Error al obtener perfil';
     }
-  },
+  };
+
+  return {
+    login,
+    registerMail,
+    register,
+    recoverMail,
+    recover,
+    updatePassword,
+    getProfile,
+  };
 };
 
-export default UserService;
+export default useAuthApi;

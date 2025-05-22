@@ -2,14 +2,14 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import UserService from '../api/AuthApi';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import useAuthService from '../api/AuthApi';
 import CodeValidationForm from '../components/CodeValidationForm';
 
 export default function RegisterValidateCodeScreen() {
   const navigation = useNavigation();
   const route = useRoute();
   const { username } = route.params;
+  const { register } = useAuthService();
 
 const handleValidate = async ({ username, code }) => {
   const cleanedCode = code.trim();
@@ -17,7 +17,7 @@ const handleValidate = async ({ username, code }) => {
   console.log('Cleaned Code:', cleanedCode);
 
   try {
-    const data = await UserService.register({ username, code: cleanedCode });
+    const data = await register({ username, code: cleanedCode });
     console.log('Data:', data);
     navigation.navigate('Login');
   } catch (error) {

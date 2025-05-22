@@ -1,21 +1,22 @@
 // screens/NewPasswordScreen.js
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
-import UserService from '../api/AuthApi';
+import useAuthService from '../api/AuthApi';
+
 
 export default function NewPasswordScreen({ route, navigation }) {
   const { username } = route.params;
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const { updatePassword } = useAuthService();
 
   const handlePasswordChange = async () => {
     if (newPassword !== confirmPassword) {
       Alert.alert('Error', 'Las contraseñas no coinciden');
       return;
     }
-
     try {
-      await UserService.newPassword({ username, password: newPassword })
+      await updatePassword({ username, password: newPassword })
       Alert.alert('Éxito', 'Tu contraseña ha sido actualizada');
       navigation.navigate('Login'); // o a donde corresponda
     } catch (error) {

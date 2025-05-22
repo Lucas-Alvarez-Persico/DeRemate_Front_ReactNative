@@ -2,17 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
-import AuthApi from '../api/AuthApi';
+import useAuthService from '../api/AuthApi';
 
 export default function UserScreen() {
   const navigation = useNavigation();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { getProfile } = useAuthService();
 
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const profile = await AuthApi.getProfile();
+        const profile = await getProfile();
         setUser(profile);
       } catch (error) {
         Alert.alert('Error', error.toString());
