@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useContext, useEffect, useRef } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { getToken } from '../utils/tokenStorage';
+import * as SecureStore from 'expo-secure-store';
 import { useNavigation } from '@react-navigation/native';
 
 export const useAxios = () => {
@@ -13,10 +14,19 @@ export const useAxios = () => {
     const instance = axiosInstance.current;
 
     instance.interceptors.request.use(async (config) => {
-      const token = await getToken();
+      let token;
+
+      // ✅ Elegimos el token según el endpoint
+      if (config.url?.includes('/user/newPassword')) {
+        token = await SecureStore.getItemAsync('recover_token');
+      } else {
+        token = await getToken(); // Devuelve access_token desde tu utils/tokenStorage
+      }
+
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
+
       return config;
     });
 
@@ -24,8 +34,8 @@ export const useAxios = () => {
       (res) => res,
       async (err) => {
         if (err.response?.status === 401) {
-          await logout();              // Actualiza estado global
-          navigation.reset({           // Borra historial y navega al login
+          await logout();
+          navigation.reset({
             index: 0,
             routes: [{ name: 'Login' }],
           });

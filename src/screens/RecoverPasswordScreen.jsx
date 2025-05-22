@@ -35,7 +35,7 @@ const handleRecover = async () => {
     setLoading(true);
     const response = await recoverMail(email);
     Alert.alert('Deremate', 'Revisa tu correo electrónico para el código de verificación');
-    navigation.navigate('ValidateCodeScreen', { username: email });
+    navigation.navigate('ValidateCodeScreen', { username: email});
   } catch (error) {
     Alert.alert('Error', error.toString());
   } finally {
