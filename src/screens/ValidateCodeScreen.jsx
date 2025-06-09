@@ -14,7 +14,7 @@ export default function ValidateCodeScreen() {
 
   const handleValidate = async ({ username, code }) => {
     const data = await recover({ username, code });
-    await SecureStore.setItemAsync('access_token', data);
+    await SecureStore.setItemAsync('recover_token', data);
     navigation.navigate('NewPasswordScreen', { username });
   };
 

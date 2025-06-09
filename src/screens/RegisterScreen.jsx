@@ -48,7 +48,7 @@ console.log('Usuario:', user);
   try {
     console.log('Registrando usuario...');
     await registerMail(user);
-    showAlert('Cuenta registrada exitosamente. Revisa tu correo.');
+    showAlert('Revisa tu correo para validar el registro.');
     navigation.replace('RegisterValidateCodeScreen', { username: email });
   } catch (error) {
     showAlert(error || 'Ocurrió un error al registrar');
