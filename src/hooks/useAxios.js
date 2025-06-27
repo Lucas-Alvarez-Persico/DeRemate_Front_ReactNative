@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 export const useAxios = () => {
   const { logout } = useContext(AuthContext);
   const navigation = useNavigation();
-  const axiosInstance = useRef(axios.create({ baseURL: 'http://192.168.68.63:8080' }));
+  const axiosInstance = useRef(axios.create({ baseURL: 'http://192.168.100.215:8080' }));
 
   useEffect(() => {
     const instance = axiosInstance.current;
@@ -19,7 +19,11 @@ export const useAxios = () => {
       // ✅ Elegimos el token según el endpoint
       if (config.url?.includes('/user/newPassword')) {
         token = await SecureStore.getItemAsync('recover_token');
-      } else {
+      } 
+      else if(config.url.includes('/user/login')){
+        return config
+      }
+      else {
         token = await getToken(); // Devuelve access_token desde tu utils/tokenStorage
       }
 

@@ -13,7 +13,16 @@ const useDeliveryApi = () => {
     }
   };
 
-  return { getOrdersByStatus };
+  const assingDelivery = async (deliveryId) => {
+    try {
+      const response = await axiosInstance.put(`/delivery/${deliveryId}`);
+      return response.data
+    } catch (error) {
+      throw error.response?.data?.message || "Error al asignar la orden";
+    }
+  }
+
+  return { getOrdersByStatus, assingDelivery };
 };
 
 export default useDeliveryApi;
