@@ -7,6 +7,7 @@ import useDeliveryService from "../api/DeliveryApi";
 import Header from "../components/Header";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { openGoogleMaps } from "../components/Map";
+import DeliveryConfirmationCode from '../components/DeliveryConfirmationCode';
 
 
 import OrderStatusCard from "../components/InProgressCard";
@@ -65,17 +66,25 @@ export default function InProgressScreen() {
         <Text style={styles.headerText}>En Curso</Text>
       </View>
       {delivery && (
-        <OrderStatusCard
-          orderId={delivery.id}
-          client={delivery.order.client}
-          address={delivery.order.address}
-          startTime={formatDateTime(delivery.startTime)}
-        />
+        <View>
+          <OrderStatusCard
+            orderId={delivery.id}
+            client={delivery.order.client}
+            address={delivery.order.address}
+            startTime={formatDateTime(delivery.startTime)}
+          />
+
+          <Button 
+          title="Google Maps"
+          onPress={() => openGoogleMaps(delivery?.order?.address)}
+          />
+
+          <DeliveryConfirmationCode
+          deliveryId={delivery.id}
+          onConfirmed={() => fetchDelivery(true)}
+          />
+        </View>
       )}
-      <Button 
-      title="Google Maps"
-      onPress={() => openGoogleMaps(delivery?.order?.address)}
-      />
       
       {loading && (
         <View style={styles.center}>
