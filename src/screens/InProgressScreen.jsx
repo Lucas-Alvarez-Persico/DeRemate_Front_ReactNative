@@ -2,10 +2,11 @@
 import React, { useEffect, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
-import { View, StyleSheet, ActivityIndicator, Text } from "react-native";
+import { View, StyleSheet, ActivityIndicator, Text, Button } from "react-native";
 import useDeliveryService from "../api/DeliveryApi";
 import Header from "../components/Header";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { openGoogleMaps } from "../components/Map";
 
 
 import OrderStatusCard from "../components/InProgressCard";
@@ -71,6 +72,10 @@ export default function InProgressScreen() {
           startTime={formatDateTime(delivery.startTime)}
         />
       )}
+      <Button 
+      title="Google Maps"
+      onPress={() => openGoogleMaps(delivery?.order?.address)}
+      />
       
       {loading && (
         <View style={styles.center}>
