@@ -16,6 +16,18 @@ export default function DetailsScreen() {
     navigation.navigate('QrScreen', { expectedDeliveryId: order.id });
   };
 
+  function formatDateTime(dateStr) {
+  const date = new Date(dateStr);
+  return date.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }) + 
+         ' - ' + 
+         date.toLocaleDateString('es-AR');
+}
+
+  function formatDuration(durationStr) {
+  const [hours, minutes, seconds] = durationStr.split(':');
+  return `${parseInt(hours)}h ${parseInt(minutes)}m ${parseInt(seconds)}s`;
+  }
+
   return (
     <View style={styles.container}>
       <Header
@@ -40,13 +52,14 @@ export default function DetailsScreen() {
         {isCompleted && (
           <>
             <Text style={styles.label}>Inicio del envío:</Text>
-            <Text style={styles.value}>{order.startTime}</Text>
+            <Text style={styles.value}>{formatDateTime(order.startTime)}</Text>
 
             <Text style={styles.label}>Entrega:</Text>
-            <Text style={styles.value}>{order.endTime}</Text>
+            <Text style={styles.value}>{formatDateTime(order.endTime)}</Text>
+
 
             <Text style={styles.label}>Duración total:</Text>
-            <Text style={styles.value}>{order.deliveryTime}</Text>
+            <Text style={styles.value}>{formatDuration(order.deliveryTime)}</Text>
 
             <Text style={styles.label}>Estado final:</Text>
             <Text style={styles.value}>{order.status}</Text>
