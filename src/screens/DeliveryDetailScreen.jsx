@@ -10,9 +10,14 @@ export default function DeliveryDetailScreen({ route, navigation }) {
     try {
       const response = await assingDelivery(deliveryData.deliveryId);
       Alert.alert('Éxito', 'Pedido asignado correctamente');
-      navigation.goBack();
-    } catch (error) {
+      navigation.navigate('Home', {
+        screen: 'InProgress',
+      });
+          } catch (error) {
       Alert.alert('Error', `No se pudo asignar el pedido: ${error}`);
+      navigation.navigate('Home', {
+        screen: 'InProgress',
+      });
     }
   };
 

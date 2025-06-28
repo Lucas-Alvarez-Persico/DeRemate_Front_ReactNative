@@ -1,15 +1,17 @@
+// ✅ QRScreen.js
 import { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Alert, Button, ActivityIndicator } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { processQRCode } from '../components/qrCode';
 
-const QRScreen = ({ navigation }) => {
+const QRScreen = ({ navigation, route }) => {
   const [scanned, setScanned] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [showCamera, setShowCamera] = useState(true); // 👈 NUEVO: controlar montaje de la cámara
+  const [showCamera, setShowCamera] = useState(true);
   const insets = useSafeAreaInsets();
   const [permission, requestPermission] = useCameraPermissions();
+  const { expectedDeliveryId } = route.params || {};
 
   useEffect(() => {
     if (!permission || permission.status !== 'granted') {
@@ -40,9 +42,16 @@ const QRScreen = ({ navigation }) => {
 
     try {
       const result = await processQRCode(data);
+
+      if (expectedDeliveryId && result.deliveryId !== expectedDeliveryId) {
+        throw new Error(
+          `Este QR no corresponde con el pedido seleccionado (esperado ID: ${expectedDeliveryId}, recibido: ${result.deliveryId})`
+        );
+      }
+
       navigation.navigate('DeliveryDetail', { deliveryData: result });
     } catch (error) {
-      Alert.alert('Error', `Error al procesar el código QR: ${error.message}`, [
+      Alert.alert('Error', error.message, [
         { text: 'Aceptar', onPress: () => setScanned(false) },
       ]);
     } finally {

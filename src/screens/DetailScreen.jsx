@@ -1,19 +1,25 @@
+// ✅ DetailsScreen.js
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { useRoute } from '@react-navigation/native';
+import { View, Text, StyleSheet, Button } from 'react-native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import Header from '../components/Header';
 
 export default function DetailsScreen() {
   const route = useRoute();
+  const navigation = useNavigation();
   const { order } = route.params;
-  const orderData = order.order; // Para mayor legibilidad
+  const orderData = order.order;
 
-  const isCompleted = order.status == 'COMPLETADO';
+  const isCompleted = order.status === 'COMPLETADO';
+
+  const handleAccept = () => {
+    navigation.navigate('QrScreen', { expectedDeliveryId: order.id });
+  };
 
   return (
     <View style={styles.container}>
       <Header
-        backgroundColor={isCompleted ? '#FFD93D' : '#7C4DFF'} // verde o violeta
+        backgroundColor={isCompleted ? '#FFD93D' : '#7C4DFF'}
         iconName="clipboard-text-outline"
         title={`Orden #${orderData.id}`}
       />
@@ -22,14 +28,14 @@ export default function DetailsScreen() {
         <Text style={styles.label}>ID:</Text>
         <Text style={styles.value}>{orderData.id}</Text>
 
-        <Text style={styles.label}>Dirección:</Text>
-        <Text style={styles.value}>{orderData.address}</Text>
-
-        <Text style={styles.label}>Cliente:</Text>
-        <Text style={styles.value}>{orderData.client}</Text>
-
         <Text style={styles.label}>Ubicación del paquete:</Text>
         <Text style={styles.value}>{orderData.packageLocation}</Text>
+
+        {!isCompleted && (
+          <View style={styles.buttonContainer}>
+            <Button title="Quiero este pedido" onPress={handleAccept} />
+          </View>
+        )}
 
         {isCompleted && (
           <>
@@ -74,5 +80,8 @@ const styles = StyleSheet.create({
   value: {
     fontSize: 15,
     color: '#333',
+  },
+  buttonContainer: {
+    marginTop: 20,
   },
 });

@@ -4,7 +4,6 @@ import OrdersScreen from '../screens/OrdersScreen';
 import InProgressScreen from '../screens/InProgressScreen';
 import HistoryScreen from '../screens/HistoryScreen';
 import UserScreen from '../screens/UserScreen';
-import QRScreen from '../screens/QRScreen';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Text } from 'react-native';
 
@@ -44,10 +43,6 @@ export default function TabsNavigator() {
               iconName = 'account-outline';
               iconColor = focused ? '#FFD93D' : '#999';
               break;
-            case 'QRScanner':
-              iconName = 'qrcode-scan';
-              iconColor = focused ? '#00C853' : '#999';
-              break;
             default:
               iconName = 'circle';
               iconColor = '#999';
@@ -76,10 +71,6 @@ export default function TabsNavigator() {
               label = 'Usuario';
               labelColor = focused ? '#FFD93D' : '#999';
               break;
-            case 'QRScanner':
-              label = 'Escanear';
-              labelColor = focused ? '#00C853' : '#999';
-              break;
             default:
               label = '';
               labelColor = '#999';
@@ -91,7 +82,6 @@ export default function TabsNavigator() {
     >
       <Tab.Screen name="Orders" component={OrdersScreen} />
       <Tab.Screen name="InProgress" component={InProgressScreen} />
-      <Tab.Screen name="QRScanner" component={QRScreen} />
       <Tab.Screen name="History" component={HistoryScreen} />
       <Tab.Screen name="User" component={UserScreen} />
     </Tab.Navigator>
