@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 export const useAxios = () => {
   const { logout } = useContext(AuthContext);
   const navigation = useNavigation();
-  const axiosInstance = useRef(axios.create({ baseURL: 'http://192.168.100.215:8080' }));
+  const axiosInstance = useRef(axios.create({ baseURL: 'http://192.168.68.56:8080' }));
 
   useEffect(() => {
     const instance = axiosInstance.current;
