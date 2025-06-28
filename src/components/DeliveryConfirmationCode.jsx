@@ -42,13 +42,14 @@ export default function DeliveryConfirmationCode({ deliveryId, onConfirmed }) {
         'Éxito', 
         'Entrega confirmada correctamente',
         [
-            { text: 'OK', onPress: () => navigation.navigate('HistoryScreen') }
+            { text: 'OK', onPress: () => navigation.navigate('Home',{screen: 'History'},) }
         ]
       );
     } catch (errMsg) {
       setError(errMsg);
     } finally {
       setLoading(false);
+      //navigation.navigate('Home',{screen: 'History'},)
       //navigation.navigate("HistoryScreen");
     }
   };
