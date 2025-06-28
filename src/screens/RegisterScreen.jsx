@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Image,
   Alert,
   ScrollView,
   KeyboardAvoidingView,
@@ -15,6 +14,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { useLayoutEffect } from 'react';
 import useAuthService from '../api/AuthApi';
+import LottieView from 'lottie-react-native';
 
 export default function RegisterScreen() {
   const navigation = useNavigation();
@@ -22,6 +22,8 @@ export default function RegisterScreen() {
   const [email, setEmail] = useState('');
   const [contrasena, setContrasena] = useState('');
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const animationRef = useRef(null);
   const { registerMail } = useAuthService();
 
   useLayoutEffect(() => {
@@ -35,50 +37,73 @@ export default function RegisterScreen() {
   };
 
   const handleRegister = async () => {
-  if (!nombre || !email || !contrasena) {
-    showAlert('Completa todos los campos');
-    return;
-  }
-  setLoading(true);
-  const user = {
-    name : nombre,
-    username: email,
-    password: contrasena,
-    role: 'ADMIN',
+    if (!nombre || !email || !contrasena) {
+      showAlert('Completa todos los campos');
+      return;
+    }
+
+    setLoading(true);
+
+    const user = {
+      name: nombre,
+      username: email,
+      password: contrasena,
+      role: 'ADMIN',
+    };
+
+    try {
+      await registerMail(user);
+      setSuccess(true); // solo si fue exitoso
+      animationRef.current?.play();
+
+      setTimeout(() => {
+        navigation.replace('RegisterValidateCodeScreen', { username: email });
+      }, 2500);
+    } catch (error) {
+      showAlert(error?.message || 'Ocurrió un error al registrar');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  try {
-    await registerMail(user);
-    showAlert('Revisa tu correo para validar el registro.');
-    navigation.replace('RegisterValidateCodeScreen', { username: email });
-  } catch (error) {
-    showAlert(error?.message || 'Ocurrió un error al registrar');
-  } finally {
-    setLoading(false);
+  // ✅ Muestra animación tras éxito
+  if (success) {
+    return (
+      <View style={styles.animationContainer}>
+        <LottieView
+          ref={animationRef}
+          source={require('../../assets/animations/mailSent.json')}
+          autoPlay
+          loop={false}
+          style={{ width: 250, height: 250 }}
+        />
+        <Text style={styles.successText}>¡Correo enviado con éxito!</Text>
+      </View>
+    );
   }
-};
 
-if (loading) {
-  return (
-    <View style={styles.loadingContainer}>
-      <ActivityIndicator size="large" color="#fff" />
-      <Text style={styles.loadingText}>Registrando usuario...</Text>
-    </View>
-  );
-}
+  // ✅ Loading clásico mientras se llama a la API
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#fff" />
+        <Text style={styles.loadingText}>Registrando usuario...</Text>
+      </View>
+    );
+  }
 
   return (
     <KeyboardAvoidingView
       style={{ flex: 1, backgroundColor: '#7C4DFF' }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <ScrollView contentContainerStyle={{ flexGrow: 1}}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={styles.container}>
-          
-
           <View style={styles.box}>
-          <Text style={styles.register}>Register</Text>
-          <Text style={styles.bienvenido}>Crea tu cuenta y forma parte de este proyecto!</Text>
+            <Text style={styles.register}>Register</Text>
+            <Text style={styles.bienvenido}>
+              ¡Crea tu cuenta y forma parte de este proyecto!
+            </Text>
 
             <TextInput
               style={styles.input}
@@ -106,16 +131,19 @@ if (loading) {
               autoCapitalize="none"
             />
 
-            <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
+            <TouchableOpacity
+              style={styles.registerButton}
+              onPress={handleRegister}
+              disabled={loading}
+            >
               <Text style={styles.buttonText}>Registrar</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Text style={styles.goBackText}>¿Ya tienes cuenta? Inicia sesión</Text>
+              <Text style={styles.goBackText}>
+                ¿Ya tienes cuenta? Inicia sesión
+              </Text>
             </TouchableOpacity>
-            {loading && (
-              <ActivityIndicator size="large" color="#6200ea" style={{ marginTop: 20 }} />
-            )}
           </View>
         </View>
       </ScrollView>
@@ -138,7 +166,6 @@ const styles = StyleSheet.create({
   bienvenido: {
     fontSize: 24,
     color: '#6200ea',
-    fontWeight: '',
     marginTop: 8,
     paddingBottom: 80,
   },
@@ -149,24 +176,6 @@ const styles = StyleSheet.create({
     marginTop: 150,
     alignItems: 'flex-start',
     paddingTop: 40,
-    position: 'relative',
-  },
-  registerTitle: {
-    fontSize: 40,
-    fontWeight: 'bold',
-    color: '#7C4DFF',
-    marginLeft: 10,
-    marginBottom: 16,
-    position: 'absolute',
-    top: 16,
-    left: 16,
-  },
-  image: {
-    width: 180,
-    height: 180,
-    position: 'absolute',
-    top: -70,
-    right: 16,
   },
   input: {
     width: '100%',
@@ -212,5 +221,16 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
-
+  animationContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#7C4DFF',
+  },
+  successText: {
+    marginTop: 20,
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'white',
+  },
 });
