@@ -10,6 +10,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useLayoutEffect } from 'react';
@@ -20,6 +21,7 @@ export default function RegisterScreen() {
   const [nombre, setNombre] = useState('');
   const [email, setEmail] = useState('');
   const [contrasena, setContrasena] = useState('');
+  const [loading, setLoading] = useState(false);
   const { registerMail } = useAuthService();
 
   useLayoutEffect(() => {
@@ -37,24 +39,33 @@ export default function RegisterScreen() {
     showAlert('Completa todos los campos');
     return;
   }
-console.log('Nombre:', nombre);
+  setLoading(true);
   const user = {
     name : nombre,
     username: email,
     password: contrasena,
     role: 'ADMIN',
   };
-console.log('Usuario:', user);
+
   try {
-    console.log('Registrando usuario...');
     await registerMail(user);
     showAlert('Revisa tu correo para validar el registro.');
     navigation.replace('RegisterValidateCodeScreen', { username: email });
   } catch (error) {
-    showAlert(error || 'Ocurrió un error al registrar');
+    showAlert(error?.message || 'Ocurrió un error al registrar');
+  } finally {
+    setLoading(false);
   }
 };
 
+if (loading) {
+  return (
+    <View style={styles.loadingContainer}>
+      <ActivityIndicator size="large" color="#fff" />
+      <Text style={styles.loadingText}>Registrando usuario...</Text>
+    </View>
+  );
+}
 
   return (
     <KeyboardAvoidingView
@@ -102,6 +113,9 @@ console.log('Usuario:', user);
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <Text style={styles.goBackText}>¿Ya tienes cuenta? Inicia sesión</Text>
             </TouchableOpacity>
+            {loading && (
+              <ActivityIndicator size="large" color="#6200ea" style={{ marginTop: 20 }} />
+            )}
           </View>
         </View>
       </ScrollView>
@@ -186,4 +200,17 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: '100%',
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#7C4DFF',
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+
 });
