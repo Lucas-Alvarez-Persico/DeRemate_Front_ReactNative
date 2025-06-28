@@ -2,14 +2,12 @@
 import React, { useEffect, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
-import { View, StyleSheet, ActivityIndicator, Text, Button } from "react-native";
+import { View, StyleSheet, ActivityIndicator, Text, TouchableOpacity } from "react-native";
 import useDeliveryService from "../api/DeliveryApi";
 import Header from "../components/Header";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { openGoogleMaps } from "../components/Map";
 import DeliveryConfirmationCode from '../components/DeliveryConfirmationCode';
-
-
 import OrderStatusCard from "../components/InProgressCard";
 
 export default function InProgressScreen() {
@@ -35,7 +33,6 @@ export default function InProgressScreen() {
           }
         }
       } catch (err) {
-        console.error(err);
         if (isActive) {
           setError("Error al obtener la entrega");
         }
@@ -74,10 +71,13 @@ export default function InProgressScreen() {
             startTime={formatDateTime(delivery.startTime)}
           />
 
-          <Button 
-          title="Google Maps"
-          onPress={() => openGoogleMaps(delivery?.order?.address)}
-          />
+          <TouchableOpacity
+            style={styles.mapButton}
+            onPress={() => openGoogleMaps(delivery?.order?.address)}
+          >
+            <Icon name="map-marker-radius" size={24} color="#fff" style={{ marginRight: 8 }} />
+            <Text style={styles.mapButtonText}>Ver en Google Maps</Text>
+          </TouchableOpacity>
 
           <DeliveryConfirmationCode
           deliveryId={delivery.id}
@@ -148,5 +148,25 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  mapButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#7C4DFF',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    margin: 20,
+    borderRadius: 10,
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  mapButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
