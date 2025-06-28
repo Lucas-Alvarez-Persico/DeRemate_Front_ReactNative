@@ -22,7 +22,21 @@ const useDeliveryApi = () => {
     }
   }
 
-  return { getOrdersByStatus, assingDelivery };
+  const completeDelivery = async (deliveryId, code) => {
+    try {
+      const { data } = await axiosInstance.put(
+        `/delivery/completed/${deliveryId}/${code}`
+      );
+      return data;
+    } catch (error) {
+      throw (
+        error.response?.data?.message ||
+        "Error al confirmar la entrega. Volvé a intentarlo."
+      );
+    }
+  };
+
+  return { getOrdersByStatus, assingDelivery, completeDelivery };
 };
 
 export default useDeliveryApi;
