@@ -20,7 +20,7 @@ import * as Notifications from 'expo-notifications';
 export default function LoginScreen() {
   const navigation = useNavigation();
   const { login } = useContext(AuthContext);
-  const { login: loginRequest, toggleNotificaciones } = useAuthApi(); // ← incluimos toggleNotificaciones
+  const { login: loginRequest } = useAuthApi(); // ← incluimos toggleNotificaciones
   const [usuario, setUsuario] = useState('');
   const [contrasena, setContrasena] = useState('');
 
@@ -39,10 +39,7 @@ export default function LoginScreen() {
       const { status } = await Notifications.requestPermissionsAsync();
       if (status === 'granted') {
         try {
-          await toggleNotificaciones(true);
-          console.log('✅ Usuario suscripto a notificaciones');
         } catch (err) {
-          console.error('❌ Error al suscribirse a notificaciones:', err);
         }
       }
 

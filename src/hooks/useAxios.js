@@ -23,6 +23,9 @@ export const useAxios = () => {
       else if(config.url.includes('/user/login')){
         return config
       }
+      else if(config.url.includes('/user/register')){
+        return config
+      }
       else {
         token = await getToken(); // Devuelve access_token desde tu utils/tokenStorage
       }
