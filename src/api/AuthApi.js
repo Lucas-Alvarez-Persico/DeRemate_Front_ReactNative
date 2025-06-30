@@ -15,9 +15,11 @@ const useAuthApi = () => {
 
   const registerMail = async (user) => {
     try {
+      console.log('Usuario registrado:', user);
       const response = await axiosInstance.post('/user/register/mail', user);
       return response.data;
     } catch (error) {
+      console.log('ESTOY ACA ERROR CACA:', user);
       throw error.response?.data?.message || 'Error al enviar correo de registro';
     }
   };

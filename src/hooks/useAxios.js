@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 export const useAxios = () => {
   const { logout } = useContext(AuthContext);
   const navigation = useNavigation();
-  const axiosInstance = useRef(axios.create({ baseURL: 'http://192.168.68.56:8080' }));
+  const axiosInstance = useRef(axios.create({ baseURL: 'http://192.168.0.175:8080' }));
 
   useEffect(() => {
     const instance = axiosInstance.current;
@@ -21,6 +21,9 @@ export const useAxios = () => {
         token = await SecureStore.getItemAsync('recover_token');
       } 
       else if(config.url.includes('/user/login')){
+        return config
+      }
+      else if(config.url.includes('/user/register')){
         return config
       }
       else {
