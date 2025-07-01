@@ -44,6 +44,7 @@ export const getToken = async () => {
 export const removeToken = async () => {
   try {
     await storage.deleteItemAsync('jwt');
+    await storage.deleteItemAsync('access_token');
   } catch (error) {
     if (isWeb) {
       localStorage.removeItem('jwt');

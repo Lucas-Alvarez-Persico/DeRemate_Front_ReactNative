@@ -26,11 +26,11 @@ export default function LoginScreen() {
 
   const loginUser = async () => {
     try {
-      await SecureStore.deleteItemAsync('access_token');
+      await SecureStore.deleteItemAsync('jwt');
 
       const user = await loginRequest({ username: usuario, password: contrasena });
 
-      await SecureStore.setItemAsync('access_token', user.access_token);
+      await SecureStore.setItemAsync('jwt', user.access_token);
       await SecureStore.setItemAsync('role', user.role);
 
       await login(user.access_token);

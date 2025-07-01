@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Alert } fr
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 import useAuthService from '../api/AuthApi';
+import * as SecureStore from 'expo-secure-store';
 
 export default function UserScreen() {
   const navigation = useNavigation();
@@ -24,7 +25,13 @@ export default function UserScreen() {
 
     fetchUserProfile();
   }, []);
-
+  const logout = async () => {
+      try {
+        await SecureStore.deleteItemAsync('jwt');
+        navigation.navigate('Login')
+      } catch (e){
+        console.log(e)
+      }}
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -51,7 +58,7 @@ export default function UserScreen() {
             <Text style={styles.bold}>Email: </Text>{user?.username}
           </Text>
 
-          <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.logoutButton}>
+          <TouchableOpacity onPress={() => logout()} style={styles.logoutButton}>
             <Text style={styles.logoutText}>Cerrar Sesión</Text>
             <Icon name="logout" size={20} color="#c62828" />
           </TouchableOpacity>
