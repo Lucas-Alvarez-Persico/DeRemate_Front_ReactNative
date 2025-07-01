@@ -15,23 +15,34 @@ import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../context/AuthContext';
 import * as SecureStore from 'expo-secure-store';
 import useAuthApi from '../api/AuthApi';
+import * as Notifications from 'expo-notifications';
 
 export default function LoginScreen() {
   const navigation = useNavigation();
   const { login } = useContext(AuthContext);
-  const { login: loginRequest } = useAuthApi(); 
+  const { login: loginRequest } = useAuthApi(); // ← incluimos toggleNotificaciones
   const [usuario, setUsuario] = useState('');
   const [contrasena, setContrasena] = useState('');
 
   const loginUser = async () => {
     try {
       await SecureStore.deleteItemAsync('access_token');
+
       const user = await loginRequest({ username: usuario, password: contrasena });
 
       await SecureStore.setItemAsync('access_token', user.access_token);
       await SecureStore.setItemAsync('role', user.role);
 
       await login(user.access_token); // Actualiza estado global
+
+      // 🔔 Pedir permiso para notificaciones
+      const { status } = await Notifications.requestPermissionsAsync();
+      if (status === 'granted') {
+        try {
+        } catch (err) {
+        }
+      }
+
       navigation.replace('Home');
     } catch (errorMessage) {
       Alert.alert('Deremate', errorMessage);

@@ -4,7 +4,8 @@ import Header from "../components/Header";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import OrderList from "../components/OrderList";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import useDeliveryService from "../api/DeliveryApi"; 
+import useDeliveryService from "../api/DeliveryApi";
+import * as Notifications from 'expo-notifications'; 
 
 export default function OrdersScreen() {
   const [orders, setOrders] = useState([]);
@@ -13,29 +14,42 @@ export default function OrdersScreen() {
   const navigation = useNavigation();
   const { getOrdersByStatus } = useDeliveryService();
 
-  const fetchOrders = useCallback(async (isActive) => {
-    setLoading(true);
-    setError(null);
+const fetchOrders = useCallback(async (isActive) => {
+  setLoading(true);
+  setError(null);
 
-    try {
-      const data = await getOrdersByStatus("PENDIENTE");
-      if (isActive) {
-        if (data.length > 0) {
-          setOrders(data);
-        } else {
-          setOrders([]);
-          setError("No hay entregas completadas");
-        }
+  try {
+    const data = await getOrdersByStatus("PENDIENTE");
+
+    if (isActive) {
+      if (data.length > 0) {
+        setOrders(data);
+
+        // 🔔 Notificación local inmediata
+        await Notifications.scheduleNotificationAsync({
+          content: {
+            title: "Nuevas órdenes disponibles",
+            body: `Hay ${data.length} órdenes pendientes.`,
+          },
+          trigger: null,
+        });
+
+      } else {
+        setOrders([]);
+        setError("No hay entregas completadas");
       }
-    } catch (error) {
-      console.error("Error al obtener órdenes:", error);
-      if (isActive) {
-        setError("No se pudieron cargar las órdenes.");
-      }
-    } finally {
-      if (isActive) setLoading(false);
     }
-  }, []);
+  } catch (error) {
+    console.error("Error al obtener órdenes:", error);
+    if (isActive) {
+      setError("No se pudieron cargar las órdenes.");
+    }
+  } finally {
+    if (isActive) setLoading(false);
+  }
+}, []);
+
+
 
   useFocusEffect(
     useCallback(() => {
