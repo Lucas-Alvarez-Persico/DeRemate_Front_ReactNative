@@ -10,6 +10,7 @@ import {
 import useDeliveryService from '../api/DeliveryApi';
 import { useNavigation } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function DeliveryConfirmationCode({ deliveryId, onConfirmed }) {
   const [visible, setVisible] = useState(false);
@@ -62,9 +63,16 @@ export default function DeliveryConfirmationCode({ deliveryId, onConfirmed }) {
 
   return (
     <>
-      <TouchableOpacity style={styles.button} onPress={open}>
-        <Text style={styles.buttonText}>Confirmar entrega</Text>
+      <TouchableOpacity style={styles.confirmButton} onPress={open}>
+        <Icon
+          name="check-bold"
+          size={22}
+          color="#fff"
+          style={{ marginRight: 8, alignSelf: 'center', marginTop: 1 }}
+        />
+        <Text style={styles.confirmButtonText}>Confirmar entrega</Text>
       </TouchableOpacity>
+
 
       <Modal
         visible={visible}
@@ -187,4 +195,26 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
+  confirmButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#7C4DFF',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    margin: 20,
+    borderRadius: 10,
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+},
+
+confirmButtonText: {
+  color: '#fff',
+  fontSize: 16,
+  fontWeight: 'bold',
+},
+
 });

@@ -1,8 +1,9 @@
 // DetailsScreen.js
 import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet, Button, TouchableOpacity } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import Header from '../components/Header';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function DetailsScreen() {
   const route = useRoute();
@@ -44,9 +45,14 @@ export default function DetailsScreen() {
         <Text style={styles.value}>{orderData.packageLocation}</Text>
 
         {!isCompleted && (
-          <View style={styles.buttonContainer}>
-            <Button title="Quiero este pedido" onPress={handleAccept} />
-          </View>
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={handleAccept}
+          >
+            <Icon name="cube-send" size={24} color="#fff" style={{ marginRight: 8 }} />
+            <Text style={styles.actionButtonText}>Quiero este pedido</Text>
+          </TouchableOpacity>
+
         )}
 
         {isCompleted && (
@@ -97,4 +103,25 @@ const styles = StyleSheet.create({
   buttonContainer: {
     marginTop: 20,
   },
+  actionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#7C4DFF',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    margin: 20,
+    borderRadius: 10,
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+},
+actionButtonText: {
+  color: '#fff',
+  fontSize: 16,
+  fontWeight: 'bold',
+},
+
 });
