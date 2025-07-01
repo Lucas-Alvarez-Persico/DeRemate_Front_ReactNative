@@ -1,4 +1,4 @@
-// ✅ QRScreen.js
+// QRScreen.js
 import { useState, useEffect, useRef } from 'react';
 import {
   StyleSheet,

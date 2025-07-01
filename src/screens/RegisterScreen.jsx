@@ -66,7 +66,6 @@ export default function RegisterScreen() {
     }
   };
 
-  // ✅ Muestra animación tras éxito
   if (success) {
     return (
       <View style={styles.animationContainer}>
@@ -82,7 +81,6 @@ export default function RegisterScreen() {
     );
   }
 
-  // ✅ Loading clásico mientras se llama a la API
   if (loading) {
     return (
       <View style={styles.loadingContainer}>

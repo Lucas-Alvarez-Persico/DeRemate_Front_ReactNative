@@ -102,7 +102,6 @@ export default function InProgressScreen() {
   );
 }
 
-// Función para formatear la fecha a formato "hh:mm:ss dd-MM-yyyy"
 function formatDateTime(dateTimeString) {
   const date = new Date(dateTimeString);
   const time = date.toLocaleTimeString("es-AR");

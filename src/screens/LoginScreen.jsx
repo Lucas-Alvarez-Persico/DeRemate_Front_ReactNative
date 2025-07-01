@@ -20,7 +20,7 @@ import * as Notifications from 'expo-notifications';
 export default function LoginScreen() {
   const navigation = useNavigation();
   const { login } = useContext(AuthContext);
-  const { login: loginRequest } = useAuthApi(); // ← incluimos toggleNotificaciones
+  const { login: loginRequest } = useAuthApi();
   const [usuario, setUsuario] = useState('');
   const [contrasena, setContrasena] = useState('');
 
@@ -33,9 +33,8 @@ export default function LoginScreen() {
       await SecureStore.setItemAsync('access_token', user.access_token);
       await SecureStore.setItemAsync('role', user.role);
 
-      await login(user.access_token); // Actualiza estado global
+      await login(user.access_token);
 
-      // 🔔 Pedir permiso para notificaciones
       const { status } = await Notifications.requestPermissionsAsync();
       if (status === 'granted') {
         try {

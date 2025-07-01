@@ -18,7 +18,7 @@ export default function NewPasswordScreen({ route, navigation }) {
     try {
       await updatePassword({ username, password: newPassword })
       Alert.alert('Éxito', 'Tu contraseña ha sido actualizada');
-      navigation.navigate('Login'); // o a donde corresponda
+      navigation.navigate('Login');
     } catch (error) {
       Alert.alert('Error', error.response?.data?.message || 'Error al cambiar contraseña');
     }

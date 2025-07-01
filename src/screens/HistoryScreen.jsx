@@ -28,7 +28,6 @@ export default function HistoryScreen() {
         }
       }
     } catch (error) {
-      console.error("Error al obtener órdenes:", error);
       if (isActive) {
         setError("No se pudieron cargar las órdenes.");
       }

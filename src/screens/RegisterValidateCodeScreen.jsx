@@ -13,19 +13,14 @@ export default function RegisterValidateCodeScreen() {
 
 const handleValidate = async ({ username, code }) => {
   const cleanedCode = code.trim();
-  console.log('Username:', username);
-  console.log('Cleaned Code:', cleanedCode);
 
   try {
     const data = await register({ username, code: cleanedCode });
-    console.log('Data:', data);
     navigation.navigate('Login');
   } catch (error) {
-    console.error('Error:', error);
     Alert.alert('Error', error);
   }
 };
-
 
   return (
     <View style={styles.container}>

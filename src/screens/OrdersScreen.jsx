@@ -24,23 +24,12 @@ const fetchOrders = useCallback(async (isActive) => {
     if (isActive) {
       if (data.length > 0) {
         setOrders(data);
-
-        // 🔔 Notificación local inmediata
-        await Notifications.scheduleNotificationAsync({
-          content: {
-            title: "Nuevas órdenes disponibles",
-            body: `Hay ${data.length} órdenes pendientes.`,
-          },
-          trigger: null,
-        });
-
       } else {
         setOrders([]);
         setError("No hay entregas completadas");
       }
     }
   } catch (error) {
-    console.error("Error al obtener órdenes:", error);
     if (isActive) {
       setError("No se pudieron cargar las órdenes.");
     }

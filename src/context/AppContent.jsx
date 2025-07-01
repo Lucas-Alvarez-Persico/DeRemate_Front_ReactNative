@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useContext } from 'react';
 import * as Notifications from 'expo-notifications';
 import { LogBox } from 'react-native';
 import NotificationApi from '../api/NotificationApi';
-import { AuthContext } from './AuthContext'; // <-- Asegurate de importar el AuthContext
+import { AuthContext } from './AuthContext';
 
 LogBox.ignoreLogs([
   'expo-notifications: Android Push notifications',
@@ -24,17 +24,15 @@ export default function AppContent({ children }) {
   const intervalRef = useRef(null);
 
   useEffect(() => {
-    if (isAuthenticated !== true) return; // Espera hasta que esté autenticado
+    if (isAuthenticated !== true) return;
 
     const sub = Notifications.addNotificationReceivedListener(notification => {
-      // Si querés hacer algo visual
     });
 
     const fetchNotifications = async () => {
       try {
         const notificaciones = await getUnreadNotifications();
         if (notificaciones.length > 0) {
-          console.log('🔔 Notificaciones nuevas:', notificaciones);
           for (const noti of notificaciones) {
             await Notifications.scheduleNotificationAsync({
               content: {
@@ -47,18 +45,17 @@ export default function AppContent({ children }) {
           }
         }
       } catch (err) {
-        console.error('❌ Error al obtener notificaciones:', err);
       }
     };
 
     intervalRef.current = setInterval(fetchNotifications, 10000);
-    fetchNotifications(); // Llamada inicial
+    fetchNotifications();
 
     return () => {
       sub.remove();
       clearInterval(intervalRef.current);
     };
-  }, [isAuthenticated]); // ← Se ejecuta cuando cambia el estado
+  }, [isAuthenticated]);
 
   return <>{children}</>;
 }

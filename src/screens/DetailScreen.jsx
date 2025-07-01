@@ -1,4 +1,4 @@
-// ✅ DetailsScreen.js
+// DetailsScreen.js
 import React from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';

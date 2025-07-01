@@ -27,8 +27,7 @@ export default function DeliveryDetailScreen({ route, navigation }) {
       await assingDelivery(deliveryData.deliveryId);
       setSuccess(true);
       animationRef.current?.play();
-
-      // Redirigir luego de 2.5s
+      
       setTimeout(() => {
         navigation.navigate('Home', {
           screen: 'InProgress',

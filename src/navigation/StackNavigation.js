@@ -7,7 +7,7 @@ import RecoverPasswordScreen from '../screens/RecoverPasswordScreen';
 import ValidateCodeScreen from '../screens/ValidateCodeScreen.jsx';
 import NewPasswordScreen from '../screens/NewPasswordScreen'
 import RegisterValidateCodeScreen from '../screens/RegisterValidateCodeScreen';
-import TabsNavigator from './TabsNavigator'; // ✅ Importar tu navbar
+import TabsNavigator from './TabsNavigator';
 import QRScreen from '../screens/QRScreen.jsx';
 import DeliveryDetailScreen from '../screens/DeliveryDetailScreen.jsx';
 import HistoryScreen from '../screens/HistoryScreen.jsx';
