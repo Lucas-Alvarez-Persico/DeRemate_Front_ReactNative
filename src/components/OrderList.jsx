@@ -17,7 +17,7 @@ export default function OrderList({ orders = [], onPress }) {
         <TouchableOpacity key={item.id} onPress={() => onPress(item)}>
           <View style={styles.card}>
             <Text style={styles.orderTitle}>Orden #{item.order?.id ?? 'N/A'}</Text>
-            <Text style={styles.orderAddress}>Dirección: {item.order?.address ?? 'Sin dirección'}</Text>
+            <Text style={styles.orderPackageLocation}>Ubicación del paquete: {item.order?.packageLocation ?? 'Sin ubicación del paquete'}</Text>
           </View>
         </TouchableOpacity>
       ))}
